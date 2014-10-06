@@ -148,9 +148,10 @@ class RedlineMojo extends GroovyMojo {
         builder.setPlatform(architecture, os)
 
         //Finish setting the general properties of the Builder
-        def parsedVersion = parsePackagingVersion(packaging.version)
-        def sourcePackage = "${packaging.name}-$parsedVersion-${packaging.release}.src.rpm"
-        builder.setPackage(packaging.name, parsedVersion, packaging.release)
+        def parsedVersion = fixDashes(packaging.version)
+		def release = fixDashes(packaging.release)
+        def sourcePackage = "${packaging.name}-$parsedVersion-${release}.src.rpm"
+        builder.setPackage(packaging.name, parsedVersion, release)
         builder.addHeaderEntry(Header.HeaderTag.SOURCERPM, sourcePackage)
 
 
@@ -190,6 +191,13 @@ class RedlineMojo extends GroovyMojo {
         }
     }
 
+	/**
+	 * Converts dasheds to underscores for valid header values.
+	 */
+	def String fixDashes(String string) {
+		return string.replaceAll('-', '_')
+	}
+
     /**
      * Works on the platform instance to ensure it is configured correctly for usage
      */
@@ -209,22 +217,6 @@ class RedlineMojo extends GroovyMojo {
                 fail("${platform.os} was entered and was not a valid value. Please use one of the following: ${Os.values()}")
             }
         }
-    }
-
-    /**
-     * Parses the version parameter to ensure that there are no additional hyphens
-     * in the rpm's version which will be displayed in the rpm's filename. The linux rpm
-     * command has had issues in the past with too many hyphens.
-     *
-     * @param version
-     * @return
-     */
-    def String parsePackagingVersion(String version) {
-        if(version.contains("-SNAPSHOT")) {
-            log.info("Version contains '-SNAPSHOT.' Removing the extra hyphen.")
-            version = version.replaceAll("-SNAPSHOT", "SNAPSHOT")
-        }
-        return version
     }
 
     /**

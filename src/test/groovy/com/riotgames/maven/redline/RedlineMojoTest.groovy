@@ -15,8 +15,8 @@ class RedlineMojoTest extends GroovyTestCase {
 
     @Test
     void testGoodParsedVersion() {
-        def result = redlineMojo.parsePackagingVersion("1.0-SNAPSHOT")
-        assertEquals result, "1.0SNAPSHOT"
+        def result = redlineMojo.fixDashes("1.0-SNAPSHOT")
+        assertEquals result, "1.0_SNAPSHOT"
     }
 
     @Test

@@ -260,8 +260,12 @@ class RedlineMojo extends GroovyMojo {
             //else, only a single file was mapped
             else {
                 absoluteRpmPath = directoryInRpm + sourceFile.name
-                log.info("Adding file $sourceFile to rpm at path $absoluteRpmPath")
-                builder.addFile(absoluteRpmPath, sourceFile)
+				def permissions
+				if (sourceFile.canExecute()) permissions = 755;
+				else permissions = 644;
+
+				log.info("Adding file $sourceFile to rpm at path $absoluteRpmPath with permissions ${permissions}")
+				builder.addFile(absoluteRpmPath, sourceFile, permissions)
             }
         }
     }

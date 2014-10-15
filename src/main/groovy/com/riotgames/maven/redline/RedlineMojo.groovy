@@ -253,7 +253,7 @@ class RedlineMojo extends GroovyMojo {
                 sourceFileRoot = sourceFile.canonicalPath
                 sourceFile.eachFileRecurse(FileType.FILES, {file ->
                     absoluteRpmPath = directoryInRpm + file.canonicalPath.substring(sourceFileRoot.length()+1)
-                    log.info("Adding file ${file.absolutePath} to rpm at path $absoluteRpmPath")
+                    log.info("Adding file to rpm at path $absoluteRpmPath")
                     builder.addFile(absoluteRpmPath, file)
                 })
             }
@@ -261,10 +261,10 @@ class RedlineMojo extends GroovyMojo {
             else {
                 absoluteRpmPath = directoryInRpm + sourceFile.name
 				def permissions
-				if (sourceFile.canExecute()) permissions = 755;
-				else permissions = 644;
+				if (sourceFile.canExecute()) permissions = 0755;
+				else permissions = 0644;
 
-				log.info("Adding file $sourceFile to rpm at path $absoluteRpmPath with permissions ${permissions}")
+				log.info("Adding file to rpm at path $absoluteRpmPath with permissions ${permissions}")
 				builder.addFile(absoluteRpmPath, sourceFile, permissions)
             }
         }
